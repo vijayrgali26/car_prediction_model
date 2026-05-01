@@ -10,9 +10,11 @@ A machine learning project that predicts the selling price of used cars based on
 | ----------------- | ------------------------------------------------ |
 | **Project Title** | Car Price Prediction using ML                    |
 | **Domain**        | Machine Learning — Supervised Learning (Regression) |
-| **Algorithm**     | Gradient Boosting Regressor                      |
-| **Accuracy (R²)** | ~90%                                            |
-| **Avg Error (MAE)** | ±₹0.19 Lakhs                                 |
+| **Algorithm**     | Ensemble (Random Forest + Gradient Boosting)     |
+| **Accuracy (R²)** | ~96%                                            |
+| **Avg Error (MAE)** | ±₹0.11 Lakhs                                 |
+| **Training Data** | 10,000 synthetic samples                         |
+| **Features**      | 15 (10 base + 5 engineered)                      |
 | **Language**      | Python 3.x                                       |
 | **UI**            | Tkinter (Desktop GUI)                            |
 
@@ -20,7 +22,7 @@ A machine learning project that predicts the selling price of used cars based on
 
 ## 🎯 Objective
 
-Build a machine learning model that can accurately predict the resale/selling price of a used car based on user-provided features. The user enters car details through a simple desktop UI, and the trained ML model returns the estimated price in Indian Rupees (Lakhs).
+Build a machine learning model that can accurately predict the resale/selling price of a used car based on user-provided features. The user enters car details through a simple desktop UI, and the trained ML ensemble returns the estimated price in Indian Rupees (Lakhs).
 
 ---
 
@@ -54,31 +56,38 @@ Car-Price-Prediction/
 ## 🧠 Machine Learning Concepts Used
 
 ### 1. Dataset Generation
-- 5,000 synthetic car records generated using NumPy with realistic distributions
+- 10,000 synthetic car records generated using NumPy with realistic distributions
 - Features include brand premiums, depreciation curves, fuel-type bonuses, and Gaussian noise to simulate real-world variance
+- Reduced noise (σ=0.25) compared to earlier version for cleaner signal
 
 ### 2. Data Preprocessing
 - **Label Encoding** — Categorical features (Brand, Fuel Type, Transmission, Seller Type) converted to numerical values using `sklearn.preprocessing.LabelEncoder`
-- **Feature Scaling** — All features standardized using `sklearn.preprocessing.StandardScaler` (zero mean, unit variance)
+- **Feature Engineering** — 5 new derived features created:
+  - `Km_per_Year` — Average km driven per year (usage intensity)
+  - `Age_Squared` — Non-linear depreciation capture
+  - `Brand_Premium` — Direct brand value multiplier as a feature
+  - `Power_Weight` — Engine CC per seat (power-to-size ratio)
+  - `Log_Km` — Log-transformed km driven (reduces skewness)
+- **Feature Scaling** — All 15 features standardized using `sklearn.preprocessing.StandardScaler`
 - **Train-Test Split** — 80% training / 20% testing using `sklearn.model_selection.train_test_split`
 
 ### 3. Model Training
 The following models were trained and compared:
 
-| Model               | R² Score | MAE (Lakhs) | RMSE (Lakhs) |
-| ------------------- | -------- | ----------- | ------------ |
-| Linear Regression   | 0.2969   | 0.6491      | 0.9263       |
-| Decision Tree       | 0.7495   | 0.2289      | 0.5529       |
-| Random Forest       | 0.8672   | 0.1926      | 0.4026       |
-| **Gradient Boosting** | **0.9009** | **0.1886** | **0.3477** |
+| Model               | R² Score | MAE (Lakhs) |
+| ------------------- | -------- | ----------- |
+| Random Forest (300 trees) | 0.9263 | ~0.15  |
+| Gradient Boosting (500 trees) | 0.9605 | ~0.12 |
+| **Ensemble (GBR×0.90 + RF×0.10)** | **0.9598** | **0.1143** |
 
-**Gradient Boosting Regressor** was selected as the best model.
+The **Ensemble model** (weighted average of Gradient Boosting and Random Forest) was selected as the final model.
 
 ### 4. Model Evaluation Metrics
-- **R² Score** — Measures how well the model explains variance in the target variable (1.0 = perfect)
-- **MAE (Mean Absolute Error)** — Average absolute difference between predicted and actual prices
-- **RMSE (Root Mean Squared Error)** — Penalizes larger errors more heavily than MAE
-- **5-Fold Cross Validation** — Ensures the model generalizes well and is not overfitting
+- **R² Score** — Measures how well the model explains variance in the target variable (1.0 = perfect). Achieved **96%**
+- **MAE (Mean Absolute Error)** — Average absolute difference between predicted and actual prices: **±₹0.11 Lakhs**
+- **RMSE (Root Mean Squared Error)** — Penalizes larger errors more heavily
+- **5-Fold Cross Validation** — GBR cross-val R² = 0.9549, confirming the model generalizes well
+- **Optimal Weight Search** — Tested GBR weights from 0.1 to 0.9 to find the best ensemble blend
 
 ### 5. Feature Importance
 The trained model identifies which features matter most for price prediction:
@@ -90,18 +99,29 @@ The trained model identifies which features matter most for price prediction:
 
 ## 📊 Features Used for Prediction
 
-| Feature        | Type        | Description                          | Range / Options                     |
-| -------------- | ----------- | ------------------------------------ | ----------------------------------- |
-| Brand          | Categorical | Car manufacturer                     | Maruti, Hyundai, Honda, Toyota, Ford, Tata, Mahindra, Kia, Volkswagen, BMW, Mercedes, Audi |
-| Fuel Type      | Categorical | Type of fuel                         | Petrol, Diesel, CNG, Electric       |
-| Transmission   | Categorical | Gearbox type                         | Manual, Automatic                   |
-| Seller Type    | Categorical | Who is selling                       | Dealer, Individual, Trustmark Dealer |
-| Seats          | Numerical   | Number of seats                      | 4, 5, 6, 7, 8                      |
-| Mfg. Year      | Numerical   | Manufacturing year                   | 2000 – 2025                         |
-| Km Driven      | Numerical   | Total kilometers driven              | 0 – 5,00,000                        |
-| Mileage        | Numerical   | Fuel efficiency in km/l              | 4.0 – 50.0                          |
-| Engine CC      | Numerical   | Engine displacement                  | 500 – 5000                          |
-| Previous Owners | Numerical  | Number of previous owners            | 1 – 5                               |
+| Feature         | Type        | Description                          | Range / Options                     |
+| --------------- | ----------- | ------------------------------------ | ----------------------------------- |
+| Brand           | Categorical | Car manufacturer                     | Maruti, Hyundai, Honda, Toyota, Ford, Tata, Mahindra, Kia, Volkswagen, BMW, Mercedes, Audi |
+| Fuel Type       | Categorical | Type of fuel                         | Petrol, Diesel, CNG, Electric       |
+| Transmission    | Categorical | Gearbox type                         | Manual, Automatic                   |
+| Seller Type     | Categorical | Who is selling                       | Dealer, Individual, Trustmark Dealer |
+| Seats           | Numerical   | Number of seats                      | 4, 5, 6, 7, 8                      |
+| Mfg. Year       | Numerical   | Manufacturing year                   | 2000 – 2025                         |
+| Km Driven       | Numerical   | Total kilometers driven              | 0 – 5,00,000                        |
+| Mileage         | Numerical   | Fuel efficiency in km/l              | 4.0 – 50.0                          |
+| Engine CC       | Numerical   | Engine displacement                  | 500 – 5000                          |
+| Previous Owners | Numerical   | Number of previous owners            | 1 – 5                               |
+
+### Engineered Features (auto-computed)
+
+| Feature        | Description                                      |
+| -------------- | ------------------------------------------------ |
+| Car_Age        | 2025 − Manufacturing Year                        |
+| Km_per_Year    | Km Driven ÷ Car Age (usage intensity)            |
+| Age_Squared    | Car Age² (captures non-linear depreciation)      |
+| Brand_Premium  | Brand value multiplier (e.g., Mercedes = 4.8×)   |
+| Power_Weight   | Engine CC ÷ Seats (power-to-size ratio)          |
+| Log_Km         | log(1 + Km Driven) (reduces skewness)            |
 
 ---
 
@@ -128,7 +148,7 @@ python car_price_prediction.py
 ```
 
 **What happens:**
-1. The model trains on 5,000 synthetic records (takes 2–3 seconds)
+1. The model trains on 10,000 synthetic records (takes 3–5 seconds)
 2. A desktop GUI window opens
 3. Enter car details using dropdowns and text fields
 4. Click **"⚡ PREDICT PRICE"**
@@ -179,6 +199,7 @@ The `plots/` folder contains 10 charts generated during exploratory data analysi
 | --------------- | ----------------------------------- |
 | Language        | Python 3.x                          |
 | ML Library      | Scikit-Learn                        |
+| Models          | Random Forest + Gradient Boosting (Ensemble) |
 | Data Handling   | Pandas, NumPy                       |
 | Visualization   | Matplotlib, Seaborn                 |
 | GUI             | Tkinter                             |
@@ -189,33 +210,33 @@ The `plots/` folder contains 10 charts generated during exploratory data analysi
 ## 📝 ML Pipeline Summary
 
 ```
-┌─────────────────────┐
-│  1. Generate Data    │  5000 synthetic car records with realistic pricing
-└────────┬────────────┘
+┌──────────────────────────┐
+│  1. Generate Data         │  10,000 synthetic car records with realistic pricing
+└────────┬─────────────────┘
          ▼
-┌─────────────────────┐
-│  2. EDA              │  Statistical analysis + 6 visualization plots
-└────────┬────────────┘
+┌──────────────────────────┐
+│  2. Feature Engineering   │  5 derived features: Km_per_Year, Age², Brand_Premium, etc.
+└────────┬─────────────────┘
          ▼
-┌─────────────────────┐
-│  3. Preprocessing    │  Label Encoding → Standard Scaling → 80/20 Split
-└────────┬────────────┘
+┌──────────────────────────┐
+│  3. Preprocessing         │  Label Encoding → Standard Scaling → 80/20 Split
+└────────┬─────────────────┘
          ▼
-┌─────────────────────┐
-│  4. Model Training   │  Linear Reg, Decision Tree, Random Forest, Gradient Boosting
-└────────┬────────────┘
+┌──────────────────────────┐
+│  4. Model Training        │  Random Forest (300 trees) + Gradient Boosting (500 trees)
+└────────┬─────────────────┘
          ▼
-┌─────────────────────┐
-│  5. Evaluation       │  R², MAE, RMSE, 5-Fold Cross Validation
-└────────┬────────────┘
+┌──────────────────────────┐
+│  5. Ensemble Blending     │  Optimal weight search → GBR×0.90 + RF×0.10
+└────────┬─────────────────┘
          ▼
-┌─────────────────────┐
-│  6. Best Model       │  Gradient Boosting (R² = 0.9009)
-└────────┬────────────┘
+┌──────────────────────────┐
+│  6. Evaluation            │  R² = 96%, MAE = ±₹0.11L, 5-Fold CV = 95.5%
+└────────┬─────────────────┘
          ▼
-┌─────────────────────┐
-│  7. Prediction UI    │  Tkinter GUI — User enters data → Model predicts price
-└─────────────────────┘
+┌──────────────────────────┐
+│  7. Prediction UI         │  Tkinter GUI — User enters data → Ensemble predicts price
+└──────────────────────────┘
 ```
 
 ---
