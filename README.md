@@ -1,263 +1,257 @@
-# 🚗 Car Price Prediction using Machine Learning
+# Car Price Prediction using Machine Learning
 
-A machine learning project that predicts the selling price of used cars based on various features like brand, fuel type, transmission, mileage, engine capacity, and more. The project includes a simple **Tkinter GUI** where users can enter car details and get an instant price prediction powered by a trained **Gradient Boosting Regressor** model.
+A machine learning project that predicts the **resale price of used cars** based on real-world ex-showroom prices. The project includes **138 real car models** across **17 brands** with actual showroom prices, and uses an **Ensemble ML model (Random Forest + Gradient Boosting)** to predict resale value with **99.2% R² accuracy**.
 
----
-
-## 📌 Project Overview
-
-| Detail            | Description                                      |
-| ----------------- | ------------------------------------------------ |
-| **Project Title** | Car Price Prediction using ML                    |
-| **Domain**        | Machine Learning — Supervised Learning (Regression) |
-| **Algorithm**     | Ensemble (Random Forest + Gradient Boosting)     |
-| **Accuracy (R²)** | ~96%                                            |
-| **Avg Error (MAE)** | ±₹0.11 Lakhs                                 |
-| **Training Data** | 10,000 synthetic samples                         |
-| **Features**      | 15 (10 base + 5 engineered)                      |
-| **Language**      | Python 3.x                                       |
-| **UI**            | Tkinter (Desktop GUI)                            |
+Users interact through a simple **Tkinter GUI** — select a brand, pick a model (showroom price auto-fills), enter car details, and get an instant resale price prediction.
 
 ---
 
-## 🎯 Objective
+## Project Overview
 
-Build a machine learning model that can accurately predict the resale/selling price of a used car based on user-provided features. The user enters car details through a simple desktop UI, and the trained ML ensemble returns the estimated price in Indian Rupees (Lakhs).
+| Detail              | Description                                        |
+| ------------------- | -------------------------------------------------- |
+| **Project Title**   | Car Price Prediction using ML                      |
+| **Domain**          | Machine Learning — Supervised Learning (Regression)|
+| **Algorithm**       | Ensemble (Random Forest + Gradient Boosting)       |
+| **Accuracy (R2)**   | 99.2%                                              |
+| **Avg Error (MAE)** | +-Rs.0.81 Lakhs                                    |
+| **Training Data**   | 10,000 records from 138 real car models            |
+| **Features**        | 17 (12 base + 5 engineered)                        |
+| **Car Brands**      | 17 (Maruti, Hyundai, Tata, BMW, Mercedes, etc.)    |
+| **Car Models**      | 138 real models with actual ex-showroom prices     |
+| **Language**        | Python 3.x                                         |
+| **UI**              | Tkinter (Desktop GUI)                              |
 
 ---
 
-## 📂 Project Structure
+## Objective
+
+Predict the resale/selling price of a used car based on:
+- Real ex-showroom price of the car model
+- Car age, kilometers driven, fuel type, transmission
+- Number of previous owners, seller type, mileage, engine CC
+
+The user selects a brand and model from real car data, and the ML ensemble predicts the current resale value.
+
+---
+
+## Project Structure
 
 ```
 Car-Price-Prediction/
-│
-├── car_price_prediction.py    # Main file — ML model + Tkinter UI
-├── car_dataset.csv            # Generated training dataset (5000 samples)
-├── README.md                  # Project documentation (this file)
-│
-├── model/
-│   └── car_price_model.pkl    # Saved trained model (joblib)
-│
-└── plots/
-    ├── 01_target_distribution.png
-    ├── 02_correlation_heatmap.png
-    ├── 03_price_by_brand.png
-    ├── 04_price_vs_km.png
-    ├── 05_price_vs_year.png
-    ├── 06_categorical_counts.png
-    ├── 07_model_r2_comparison.png
-    ├── 08_mae_rmse_comparison.png
-    ├── 09_actual_vs_predicted.png
-    └── 10_feature_importance.png
+|
+|-- car_price_prediction.py    # Main file — ML model + Tkinter UI
+|-- car_dataset.csv            # Generated training dataset
+|-- README.md                  # Project documentation (this file)
+|
+|-- model/
+|   +-- car_price_model.pkl    # Saved trained model (joblib)
+|
++-- plots/
+    |-- 01_target_distribution.png
+    |-- 02_correlation_heatmap.png
+    |-- ... (10 visualization charts)
+    +-- 10_feature_importance.png
 ```
 
 ---
 
-## 🧠 Machine Learning Concepts Used
+## Real Car Database (138 Models, 17 Brands)
+
+The model uses actual ex-showroom prices from the Indian market (2024-2025):
+
+| Brand      | Models | Price Range (Lakhs)  | Example Models                          |
+| ---------- | ------ | -------------------- | --------------------------------------- |
+| Maruti     | 17     | Rs.3.99 - Rs.24.79   | Alto K10, Swift, Baleno, Brezza, Grand Vitara |
+| Hyundai    | 12     | Rs.5.92 - Rs.44.95   | i20, Venue, Creta, Verna, Alcazar, Ioniq 5 |
+| Tata       | 12     | Rs.5.65 - Rs.16.19   | Punch, Nexon, Harrier, Safari, Nexon EV |
+| Mahindra   | 11     | Rs.7.49 - Rs.15.49   | Thar, Scorpio N, XUV700, XUV400 EV     |
+| Toyota     | 10     | Rs.6.86 - Rs.210.00  | Glanza, Innova, Fortuner, Camry         |
+| Kia        | 6      | Rs.7.99 - Rs.60.95   | Sonet, Seltos, Carens, EV6              |
+| Honda      | 5      | Rs.7.20 - Rs.19.50   | Amaze, City, Elevate                    |
+| BMW        | 12     | Rs.38.00 - Rs.195.00 | 3 Series, X1, X5, i4, M340i            |
+| Mercedes   | 14     | Rs.45.00 - Rs.162.00 | C-Class, E-Class, GLA, GLE, EQS        |
+| Audi       | 10     | Rs.43.81 - Rs.180.00 | A4, Q5, Q7, e-tron GT                   |
+| MG         | 7      | Rs.7.98 - Rs.38.80   | Hector, Astor, ZS EV, Gloster          |
+| Volkswagen | 4      | Rs.7.98 - Rs.35.17   | Polo, Virtus, Taigun, Tiguan           |
+| Skoda      | 4      | Rs.10.69 - Rs.54.00  | Slavia, Kushaq, Superb, Kodiaq         |
+| Renault    | 3      | Rs.4.70 - Rs.6.50    | Kwid, Triber, Kiger                     |
+| Nissan     | 2      | Rs.6.00 - Rs.49.92   | Magnite, X-Trail                        |
+| Jeep       | 4      | Rs.18.99 - Rs.77.50  | Compass, Wrangler, Grand Cherokee       |
+| Citroen    | 5      | Rs.6.16 - Rs.36.91   | C3, C3 Aircross, Basalt                |
+
+---
+
+## ML Concepts Used
 
 ### 1. Dataset Generation
-- 10,000 synthetic car records generated using NumPy with realistic distributions
-- Features include brand premiums, depreciation curves, fuel-type bonuses, and Gaussian noise to simulate real-world variance
-- Reduced noise (σ=0.25) compared to earlier version for cleaner signal
+- 10,000 used-car records generated from 138 real car models
+- Realistic depreciation model applied to actual ex-showroom prices
+- Depreciation factors: Year 1 = 15-20%, Year 2 = 10%, then 7% per year
+- Additional factors: km driven, owners, fuel type, transmission, seller type
+- Gaussian noise (6% variance) for real-world simulation
 
 ### 2. Data Preprocessing
-- **Label Encoding** — Categorical features (Brand, Fuel Type, Transmission, Seller Type) converted to numerical values using `sklearn.preprocessing.LabelEncoder`
-- **Feature Engineering** — 5 new derived features created:
-  - `Km_per_Year` — Average km driven per year (usage intensity)
+- **Label Encoding** — Brand, Model, Fuel Type, Transmission, Seller Type encoded using `LabelEncoder`
+- **Feature Engineering** — 5 derived features:
+  - `Km_per_Year` — Usage intensity (km driven / car age)
   - `Age_Squared` — Non-linear depreciation capture
-  - `Brand_Premium` — Direct brand value multiplier as a feature
+  - `Price_per_Age` — Showroom price divided by age (value retention rate)
   - `Power_Weight` — Engine CC per seat (power-to-size ratio)
   - `Log_Km` — Log-transformed km driven (reduces skewness)
-- **Feature Scaling** — All 15 features standardized using `sklearn.preprocessing.StandardScaler`
-- **Train-Test Split** — 80% training / 20% testing using `sklearn.model_selection.train_test_split`
+- **Feature Scaling** — StandardScaler applied to all 17 features
+- **Train-Test Split** — 80% training / 20% testing
 
-### 3. Model Training
-The following models were trained and compared:
+### 3. Model Training & Results
 
-| Model               | R² Score | MAE (Lakhs) |
-| ------------------- | -------- | ----------- |
-| Random Forest (300 trees) | 0.9263 | ~0.15  |
-| Gradient Boosting (500 trees) | 0.9605 | ~0.12 |
-| **Ensemble (GBR×0.90 + RF×0.10)** | **0.9598** | **0.1143** |
+| Model                              | R2 Score | Notes                    |
+| ---------------------------------- | -------- | ------------------------ |
+| Random Forest (300 trees)          | 98.94%   | Strong baseline          |
+| Gradient Boosting (300 trees)      | 99.20%   | Best individual model    |
+| **Ensemble (GBR x0.85 + RF x0.15)** | **99.20%** | **Final model used** |
 
-The **Ensemble model** (weighted average of Gradient Boosting and Random Forest) was selected as the final model.
+### 4. Evaluation
+- **R2 Score**: 99.2% — model explains 99.2% of price variance
+- **MAE**: +-Rs.0.81 Lakhs average error
+- **5-Fold Cross Validation R2**: 98.96% — confirms no overfitting
+- **Optimal ensemble weight** found via grid search (GBR=0.85, RF=0.15)
 
-### 4. Model Evaluation Metrics
-- **R² Score** — Measures how well the model explains variance in the target variable (1.0 = perfect). Achieved **96%**
-- **MAE (Mean Absolute Error)** — Average absolute difference between predicted and actual prices: **±₹0.11 Lakhs**
-- **RMSE (Root Mean Squared Error)** — Penalizes larger errors more heavily
-- **5-Fold Cross Validation** — GBR cross-val R² = 0.9549, confirming the model generalizes well
-- **Optimal Weight Search** — Tested GBR weights from 0.1 to 0.9 to find the best ensemble blend
-
-### 5. Feature Importance
-The trained model identifies which features matter most for price prediction:
-- **Car Age** and **Km Driven** are the strongest predictors (depreciation)
-- **Brand** has high importance (luxury vs economy)
-- **Engine CC** and **Transmission** also contribute significantly
+### 5. Key Feature: Real Showroom Prices
+Unlike synthetic-only datasets, this model uses **actual ex-showroom prices** as a feature. This means:
+- A BMW 3 Series (Rs.47.90L showroom) will predict differently than a Maruti Swift (Rs.6.49L)
+- The model learns real depreciation patterns per price segment
+- Predictions are grounded in actual market values
 
 ---
 
-## 📊 Features Used for Prediction
+## Features Used for Prediction (17 Total)
 
-| Feature         | Type        | Description                          | Range / Options                     |
-| --------------- | ----------- | ------------------------------------ | ----------------------------------- |
-| Brand           | Categorical | Car manufacturer                     | Maruti, Hyundai, Honda, Toyota, Ford, Tata, Mahindra, Kia, Volkswagen, BMW, Mercedes, Audi |
-| Fuel Type       | Categorical | Type of fuel                         | Petrol, Diesel, CNG, Electric       |
-| Transmission    | Categorical | Gearbox type                         | Manual, Automatic                   |
-| Seller Type     | Categorical | Who is selling                       | Dealer, Individual, Trustmark Dealer |
-| Seats           | Numerical   | Number of seats                      | 4, 5, 6, 7, 8                      |
-| Mfg. Year       | Numerical   | Manufacturing year                   | 2000 – 2025                         |
-| Km Driven       | Numerical   | Total kilometers driven              | 0 – 5,00,000                        |
-| Mileage         | Numerical   | Fuel efficiency in km/l              | 4.0 – 50.0                          |
-| Engine CC       | Numerical   | Engine displacement                  | 500 – 5000                          |
-| Previous Owners | Numerical   | Number of previous owners            | 1 – 5                               |
+### Base Features (12)
+| Feature        | Type        | Description                          |
+| -------------- | ----------- | ------------------------------------ |
+| Brand          | Categorical | Car manufacturer (17 brands)         |
+| Model          | Categorical | Car model name (138 models)          |
+| Showroom_Price | Numerical   | Real ex-showroom price in Lakhs      |
+| Fuel Type      | Categorical | Petrol, Diesel, CNG, Electric        |
+| Transmission   | Categorical | Manual, Automatic                    |
+| Seller Type    | Categorical | Dealer, Individual, Trustmark Dealer |
+| Km Driven      | Numerical   | Total kilometers driven              |
+| Mileage        | Numerical   | Fuel efficiency (km/l)               |
+| Engine CC      | Numerical   | Engine displacement                  |
+| Seats          | Numerical   | Number of seats (4-8)                |
+| Owners         | Numerical   | Previous owners (1-5)                |
+| Car Age        | Numerical   | 2025 - Manufacturing Year            |
 
-### Engineered Features (auto-computed)
-
-| Feature        | Description                                      |
-| -------------- | ------------------------------------------------ |
-| Car_Age        | 2025 − Manufacturing Year                        |
-| Km_per_Year    | Km Driven ÷ Car Age (usage intensity)            |
-| Age_Squared    | Car Age² (captures non-linear depreciation)      |
-| Brand_Premium  | Brand value multiplier (e.g., Mercedes = 4.8×)   |
-| Power_Weight   | Engine CC ÷ Seats (power-to-size ratio)          |
-| Log_Km         | log(1 + Km Driven) (reduces skewness)            |
+### Engineered Features (5)
+| Feature       | Description                                      |
+| ------------- | ------------------------------------------------ |
+| Km_per_Year   | Km Driven / Car Age (usage intensity)            |
+| Age_Squared   | Car Age squared (non-linear depreciation)        |
+| Price_per_Age | Showroom Price / (Car Age + 1) (value retention) |
+| Power_Weight  | Engine CC / Seats (power-to-size ratio)          |
+| Log_Km        | log(1 + Km Driven) (reduces skewness)            |
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
 ### Prerequisites
-
 - Python 3.8 or higher
 - Required packages:
-
 ```bash
 pip install numpy pandas scikit-learn
 ```
 
-> **Note:** `tkinter` comes pre-installed with Python on Windows and macOS. On Linux, install it with:
-> ```bash
-> sudo apt-get install python3-tk
-> ```
-
 ### Run the Application
-
 ```bash
 python car_price_prediction.py
 ```
 
-**What happens:**
-1. The model trains on 10,000 synthetic records (takes 3–5 seconds)
-2. A desktop GUI window opens
-3. Enter car details using dropdowns and text fields
-4. Click **"⚡ PREDICT PRICE"**
-5. The predicted price, price range, and market segment are displayed
+### What Happens
+1. Model trains on 10,000 records from real car data (takes ~10 seconds)
+2. GUI window opens with a dark theme
+3. Select **Brand** -> **Model** dropdown auto-updates, showroom price auto-fills
+4. Enter Year, Km Driven, Mileage, Engine CC, Owners
+5. Click **"PREDICT RESALE PRICE"**
+6. See: Estimated resale price, price range, depreciation %, and market segment
 
 ---
 
-## 🖥️ UI Preview
+## UI Features
 
-The application has a dark-themed Tkinter interface with:
-- **Dropdown menus** for Brand, Fuel Type, Transmission, Seller Type, and Seats
-- **Text input fields** for Year, Km Driven, Mileage, Engine CC, and Owners
-- **Predict button** that triggers the ML model
-- **Result panel** showing estimated price (₹ Lakhs), price range (±10%), and market segment
-
-### Market Segments
-| Price Range     | Segment      |
-| --------------- | ------------ |
-| Below ₹5 Lakhs | Entry-Level  |
-| ₹5 – ₹15 Lakhs | Mid-Range   |
-| ₹15 – ₹35 Lakhs | Premium    |
-| Above ₹35 Lakhs | Luxury      |
+- **Brand -> Model linking**: Selecting a brand auto-populates the model dropdown with that brand's cars
+- **Auto showroom price**: Selecting a model auto-fills the real ex-showroom price
+- **Depreciation display**: Shows how much value the car has lost from showroom price
+- **Market segments**: Entry-Level (<5L), Mid-Range (5-15L), Premium (15-35L), Luxury (35-60L), Ultra Luxury (60L+)
+- **Input validation**: Warns if values are out of range
 
 ---
 
-## 📈 EDA Visualizations
+## ML Pipeline
 
-The `plots/` folder contains 10 charts generated during exploratory data analysis:
-
-| Plot | Description |
-| ---- | ----------- |
-| `01_target_distribution.png` | Histogram and boxplot of selling prices |
-| `02_correlation_heatmap.png` | Correlation matrix of all numerical features |
-| `03_price_by_brand.png` | Boxplot of price distribution per brand |
-| `04_price_vs_km.png` | Scatter plot — Price vs Km Driven (colored by fuel type) |
-| `05_price_vs_year.png` | Scatter plot — Price vs Year (colored by transmission) |
-| `06_categorical_counts.png` | Count plots for Brand, Fuel, Transmission, Seller |
-| `07_model_r2_comparison.png` | Bar chart comparing R² scores of all 4 models |
-| `08_mae_rmse_comparison.png` | Grouped bar chart — MAE and RMSE per model |
-| `09_actual_vs_predicted.png` | Scatter plots — Actual vs Predicted for each model |
-| `10_feature_importance.png` | Horizontal bar chart of feature importances |
+```
++----------------------------+
+| 1. Real Car Database       |  138 models, 17 brands, actual showroom prices
++------------+---------------+
+             v
++----------------------------+
+| 2. Generate Training Data  |  10,000 records with realistic depreciation
++------------+---------------+
+             v
++----------------------------+
+| 3. Feature Engineering     |  5 derived features (Km_per_Year, Age2, etc.)
++------------+---------------+
+             v
++----------------------------+
+| 4. Preprocessing           |  Label Encoding -> Standard Scaling -> 80/20 Split
++------------+---------------+
+             v
++----------------------------+
+| 5. Train Ensemble          |  Random Forest (300) + Gradient Boosting (300)
++------------+---------------+
+             v
++----------------------------+
+| 6. Optimal Blending        |  GBR x0.85 + RF x0.15 = 99.2% R2
++------------+---------------+
+             v
++----------------------------+
+| 7. Tkinter UI              |  Brand -> Model -> Auto showroom price -> Predict
++----------------------------+
+```
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-| Component       | Technology                          |
-| --------------- | ----------------------------------- |
-| Language        | Python 3.x                          |
-| ML Library      | Scikit-Learn                        |
+| Component       | Technology                                |
+| --------------- | ----------------------------------------- |
+| Language        | Python 3.x                                |
+| ML Library      | Scikit-Learn                              |
 | Models          | Random Forest + Gradient Boosting (Ensemble) |
-| Data Handling   | Pandas, NumPy                       |
-| Visualization   | Matplotlib, Seaborn                 |
-| GUI             | Tkinter                             |
-| Model Saving    | Joblib                              |
+| Data Handling   | Pandas, NumPy                             |
+| Visualization   | Matplotlib, Seaborn                       |
+| GUI             | Tkinter                                   |
+| Model Saving    | Joblib                                    |
 
 ---
 
-## 📝 ML Pipeline Summary
+## Future Improvements
 
-```
-┌──────────────────────────┐
-│  1. Generate Data         │  10,000 synthetic car records with realistic pricing
-└────────┬─────────────────┘
-         ▼
-┌──────────────────────────┐
-│  2. Feature Engineering   │  5 derived features: Km_per_Year, Age², Brand_Premium, etc.
-└────────┬─────────────────┘
-         ▼
-┌──────────────────────────┐
-│  3. Preprocessing         │  Label Encoding → Standard Scaling → 80/20 Split
-└────────┬─────────────────┘
-         ▼
-┌──────────────────────────┐
-│  4. Model Training        │  Random Forest (300 trees) + Gradient Boosting (500 trees)
-└────────┬─────────────────┘
-         ▼
-┌──────────────────────────┐
-│  5. Ensemble Blending     │  Optimal weight search → GBR×0.90 + RF×0.10
-└────────┬─────────────────┘
-         ▼
-┌──────────────────────────┐
-│  6. Evaluation            │  R² = 96%, MAE = ±₹0.11L, 5-Fold CV = 95.5%
-└────────┬─────────────────┘
-         ▼
-┌──────────────────────────┐
-│  7. Prediction UI         │  Tkinter GUI — User enters data → Ensemble predicts price
-└──────────────────────────┘
-```
+- Connect to a live car pricing API for real-time showroom prices
+- Add car images in the UI for each model
+- Deploy as a web app using Flask or Streamlit
+- Add more car brands (Porsche, Volvo, Land Rover, etc.)
+- Include car variant-level pricing (base, mid, top)
+- Add historical price trend charts
 
 ---
 
-## 🔮 Future Improvements
-
-- Use a real-world dataset (e.g., from Kaggle or CarDekho)
-- Add more features like car model name, insurance status, service history
-- Deploy as a web application using Flask or Streamlit
-- Add hyperparameter tuning with GridSearchCV or RandomizedSearchCV
-- Implement model persistence so the model doesn't retrain on every launch
-- Add data visualization charts directly inside the UI
-
----
-
-## 👥 Contributors
+## Contributors
 
 - Car Price Prediction Team
 
 ---
 
-## 📄 License
+## License
 
 This project is for educational purposes. Feel free to use and modify.
