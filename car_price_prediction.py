@@ -223,6 +223,8 @@ def generate_dataset(n=10000, seed=42):
         # Add realistic noise (5-8% variance)
         noise = np.random.normal(1.0, 0.06)
         resale = resale * noise
+        # Resale should NEVER exceed showroom price (used car)
+        resale = min(resale, showroom_price * 0.95)
         resale = max(0.5, round(resale, 2))
 
         records.append({
@@ -326,8 +328,8 @@ def train_model():
     mae_final = mean_absolute_error(y_test, ensemble_pred)
     print(f"   -> Ensemble (GBR x{best_w:.2f} + RF x{1-best_w:.2f}) R2: {r2_final:.4f}")
 
-    cv = cross_val_score(gbr, X_train, y_train, cv=5, scoring="r2")
-    print(f"   -> 5-Fold CV R2: {cv.mean():.4f}")
+    cv = cross_val_score(gbr, X_train, y_train, cv=3, scoring="r2")
+    print(f"   -> 3-Fold CV R2: {cv.mean():.4f}")
 
     encoders = {
         "brand": le_brand, "model": le_model,
@@ -554,8 +556,11 @@ class CarPriceApp:
         p_rf  = self.model_bundle["rf"].predict(X_scaled)[0]
         price = max(0.5, w * p_gbr + (1 - w) * p_rf)
 
+        # Resale price should NEVER exceed ex-showroom price (it's a used car)
+        price = min(price, showroom_price * 0.95)  # max 95% of showroom for used
+
         low  = price * 0.92
-        high = price * 1.08
+        high = min(price * 1.08, showroom_price)  # high range also capped
 
         if price < 5:     segment = "Entry-Level"
         elif price < 15:  segment = "Mid-Range"
