@@ -41,17 +41,12 @@ The user selects a brand and model from real car data, and the ML ensemble predi
 Car-Price-Prediction/
 |
 |-- car_price_prediction.py    # Main file — ML model + Tkinter UI
-|-- car_dataset.csv            # Generated training dataset
 |-- README.md                  # Project documentation (this file)
+|-- .gitignore                 # Git ignore rules
 |
-|-- model/
-|   +-- car_price_model.pkl    # Saved trained model (joblib)
-|
-+-- plots/
-    |-- 01_target_distribution.png
-    |-- 02_correlation_heatmap.png
-    |-- ... (10 visualization charts)
-    +-- 10_feature_importance.png
+|-- model/                     # (generated) Saved trained model
+|-- plots/                     # (generated) EDA visualization charts
++-- car_dataset.csv            # (generated) Training dataset
 ```
 
 ---
